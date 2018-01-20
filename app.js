@@ -17,10 +17,8 @@ app.put('/code', function(req, res) {
 		var idErr;
 		if(!code){		
 			idErr = 1;
-		}else if{
-			idErr = exist;
 		}else{
-			res.status = 500;
+			idErr = exist;
 		}
 		res.send({'idErr' : idErr});
 	}
