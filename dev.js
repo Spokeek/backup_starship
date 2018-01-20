@@ -1,5 +1,5 @@
 const path = require('path')
-const BDD = require(path.resolve('BDD'))
+const BDD = require(path.resolve('Database'))
 const lib = require(path.resolve('lib'))
 
 const DB = new BDD()
@@ -12,6 +12,9 @@ DB.init()
 .then(() => DB.addToken(lib.getNewToken()))
 .then(() => DB.addToken(lib.getNewToken()))
 .then(() => DB.getToken(token))
-.then((row) => console.log(row))
-.then(() => DB.close())
+.then((row) => {
+	console.log(row)
+	return Promise.resolve()
+})
+.then((row) => DB.close())
 .catch(err => console.log("[ERROR]", err))

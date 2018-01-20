@@ -1,9 +1,19 @@
 const path = require('path')
 const sqlite3 = require('sqlite3').verbose()
 
-const constants = require(path.resolve('./BDDConstants'))
+const constants = require(path.resolve('DatabaseConstants'))
+
+const databaseDefaultPath = path.resolve('database.db')
 
 class Database{
+
+	constructor(databasePath){
+		if(!databasePath){
+			databasePath = databaseDefaultPath
+		}
+
+		this.databasePath = databasePath
+	}
 
 	init(){
 		return new Promise((res, rej) => {
@@ -20,7 +30,7 @@ class Database{
 
 	getDb(){
 		if(!this.db){
-			this.db = new sqlite3.Database(path.resolve('./database.db'))
+			this.db = new sqlite3.Database(this.databasePath)
 		}
 		return this.db
 	}
