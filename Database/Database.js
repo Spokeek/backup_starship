@@ -2,7 +2,7 @@ const path = require('path')
 const sqlite3 = require('sqlite3').verbose()
 const lib = require(path.resolve('lib'))
 
-const constants = require(path.resolve('DatabaseConstants'))
+const constants = require(path.resolve('Database/DatabaseConstants'))
 
 const databaseDefaultPath = path.resolve('database.db')
 
@@ -58,8 +58,10 @@ class Database{
 				if(err){
 					rej(err)
 				}
-				else
-				res(row)
+				else{
+					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
+					res(row)
+				}
 			})
 		})
 	}
@@ -71,8 +73,10 @@ class Database{
 			if(err){
 				rej(err)
 			}
-			else
-			res(rows)
+			else{
+				rows = rows.map((row) => Object.assign(row, {[constants.COLUMN_TOKENS_TIMESTAMP]: lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])}))
+				res(rows)
+			}
 		})
 	})
 	}
