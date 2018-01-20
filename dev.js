@@ -1,4 +1,5 @@
 const path = require('path')
+const moment = require('moment')
 const BDD = require(path.resolve('Database'))
 const lib = require(path.resolve('lib'))
 
@@ -14,6 +15,11 @@ DB.init()
 .then(() => DB.getToken(token))
 .then((row) => {
 	console.log(row)
+	return Promise.resolve()
+})
+.then(() => DB.getTokensSince(lib.momentToDateTime(moment().subtract(30, 'seconds'))))
+.then((rows) => {
+	console.log(rows.length)
 	return Promise.resolve()
 })
 .then((row) => DB.close())

@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const getNewToken = () => {
 	let token = ""
 	for(var i = 0; i < 8; i++){
@@ -18,4 +20,15 @@ const getNewToken = () => {
 	return token
 }
 
-module.exports = {getNewToken}
+const momentToDateTime = (momentTime) =>{
+	if(!momentTime){
+		momentTime = moment()
+	}
+	else if(!momentTime.format){
+		momentTime = moment(momentTime)
+	}
+
+	return momentTime.format('YYYY-MM-DD HH:mm:ss')
+}
+
+module.exports = {getNewToken, momentToDateTime}
