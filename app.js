@@ -4,8 +4,9 @@ const isAmiral = false;
 const idFleet;
 
 app.put('/code', function(req, res) {
-	const body = req.body;
-	if(body.code && existInDb(body.code) && !isExpired(body.code)){
+	const code = req.body.code;
+	var expired = existInDb(code);
+	if(code && exist === 0){
 		res.status = 200;
 		res.send({
 			'newCode' : getCode(),
@@ -14,12 +15,10 @@ app.put('/code', function(req, res) {
 	}else{ 
 		res.status = 400;
 		var idErr;
-		if(!body.code){		
+		if(!code){		
 			idErr = 1;
-		}else if(!existInDb(body.code){
-			idErr = 2;
-		}else if(isExpired()){
-			idErr = 3;
+		}else if{
+			idErr = exist;
 		}else{
 			res.status = 500;
 		}
@@ -34,14 +33,22 @@ function getCode(code){
 	return '123';
 }
 function existInDb(code){
-	if(getAllExistingCodes[code]){
-		return true;
+	var codesFromDb = getAllExistingCodes();
+	if(codesFromDb[code]){
+		if(!isExpired(codesFromDb,code)){
+			// not expired
+			return 0;
+		}
+		// exist but expired
+		return 3;
 	}
-	return false;
+	// not existing
+	return 2;
 }
-function isExpired(){
+function isExpired(codeFromDb,code){
 	// 18 * 5 min = 1h30
-	if(getAllExistingCodes.indexOf(code) < 18){
+	// todo , use timestamp
+	if(codeFromDb.indexOf(code) < 18){
 		return false;
 	}
 	return true;
