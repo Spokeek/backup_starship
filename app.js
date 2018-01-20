@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+const isAmiral = false;
+const idFleet;
 
 app.put('/code', function(req, res) {
 	const body = req.body;
@@ -7,7 +9,7 @@ app.put('/code', function(req, res) {
 		res.status = 200;
 		res.send({
 			'newCode' : getCode(),
-			'idFleet' : getIdFleet()
+			'idFleet' : idFleet
 		});
 	}else{ 
 		res.status = 400;
@@ -31,11 +33,6 @@ function getCode(code){
 	// Revoir ou on stock cette valeur
 	return '123';
 }
-function getIdFleet(id){
-	//TODO implement
-	// Revoir ou on stock cette valeur
-	return '123';
-}
 function existInDb(code){
 	if(getAllExistingCodes[code]){
 		return true;
@@ -55,5 +52,9 @@ function getAllExistingCodes(){
 }
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+	if(process.args[0]){
+		isAmiral = true;
+		idFleet = process.args[0];
+	}
+	console.log('App listening on port 3000!')
 })
