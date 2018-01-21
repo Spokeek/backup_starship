@@ -46,6 +46,7 @@ class Database{
 					rej(err)
 				}
 				else{
+					console.log(`Token ${newToken} added to database`)
 					res()
 				}
 			})
@@ -66,19 +67,45 @@ class Database{
 		})
 	}
 
-	getTokensSince(date){
-		console.log(date)
+	getLastToken(){
 		return new Promise((res, rej) => {
-		this.getDb().all(constants.SQL_GET_TOKEN_SINCE_DATE, {[constants.SQL_GET_TOKEN_SINCE_DATE_PARAM_TIMESTAMP]: date}, (err, rows) => {
-			if(err){
-				rej(err)
-			}
-			else{
-				rows = rows.map((row) => Object.assign(row, {[constants.COLUMN_TOKENS_TIMESTAMP]: lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])}))
-				res(rows)
-			}
+			this.getDb().get(constants.SQL_GET_LAST_TOKEN, (err, row) => {
+				if(err){
+					rej(err)
+				}
+				else{
+					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
+					res(row)
+				}
+			})
 		})
-	})
+	}
+
+	getTokensSince(date){
+		return new Promise((res, rej) => {
+			this.getDb().all(constants.SQL_GET_TOKEN_SINCE_DATE, {[constants.SQL_GET_TOKEN_SINCE_DATE_PARAM_TIMESTAMP]: lib.momentToDateTime(date)}, (err, rows) => {
+				if(err){
+					rej(err)
+				}
+				else{
+					rows = rows.map((row) => Object.assign(row, {[constants.COLUMN_TOKENS_TIMESTAMP]: lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])}))
+					res(rows)
+				}
+			})
+		})
+	}
+
+	removeTokensOlderThan(date){
+		return new Promise((res, rej) => {
+			this.getDb().run(constants.SQL_REMOVE_TOKENS_OLDER, {[constants.SQL_REMOVE_TOKENS_OLDER_PARAM_TIMESTAMP]: lib.momentToDateTime(date)}, (err) => {
+				if(err){
+					rej(err)
+				}
+				else{
+					res()
+				}
+			})
+		})
 	}
 
 	close(){
