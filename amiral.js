@@ -10,12 +10,20 @@ const regenerationTokenTimeInMin = 5
 const expirationTimeTokenInMin = 90
 const getCleanOldTokensTimeInMin = () => expirationTimeTokenInMin * 2
 
-const idFleet = 'FLOTTE AMIRAL SCINTILLANT'
+const defaultIdFleet = 'Anonymous fleet'
+const idFleet = process.env.ID_FLEET || defaultIdFleet
 
 const lib = require(path.resolve('lib'))
 const Database = require(path.resolve('Database/Database'))
 const DatabaseConstants = require(path.resolve('Database/DatabaseConstants'))
 const DB = new Database()
+
+app.get('/', (req, res) => {
+	DB.getTokensSince(moment(0))
+	.then((rows) => {
+		res.send(`Welcome on the '${idFleet}' application<br/> There is for now ${rows.length} tokens saved`)
+	})
+})
 
 app.put('/code', (req, res) => {
 	const token = (req.body || {}).code
@@ -52,8 +60,9 @@ app.put('/code', (req, res) => {
 	}
 })
 
-const server = app.listen(3000, function () {
-  console.log('Amiral app listening on port 3000!')
+const serverPort = process.env.PORT || 3000
+const server = app.listen(serverPort, function () {
+  console.log(`Amiral '${idFleet}' app listening on port ${serverPort} !`)
 })
 
 const loopFunction = () => {
