@@ -8,12 +8,19 @@ const databaseDefaultPath = path.resolve('database.db')
 
 class Database{
 
-	constructor(databasePath){
+	constructor(databasePath, verbose){
 		if(!databasePath){
 			databasePath = databaseDefaultPath
 		}
 
 		this.databasePath = databasePath
+		this.verbose = verbose
+	}
+
+	_log(message){
+		if(this.verbose){
+			console.log(message)
+		}
 	}
 
 	init(){
@@ -23,6 +30,7 @@ class Database{
 					rej(err)
 				}
 				else{
+					this._log("Database initialised.")
 					res()
 				}
 			})
@@ -46,7 +54,7 @@ class Database{
 					rej(err)
 				}
 				else{
-					console.log(`Token ${newToken} added to database`)
+					this._log(`Token ${newToken} added to database`)
 					res()
 				}
 			})
@@ -63,6 +71,7 @@ class Database{
 					if(row){
 						row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
 					}
+					this._log(`getToken from ${token} returned ${row}`)
 					res(row)
 				}
 			})
@@ -75,8 +84,12 @@ class Database{
 				if(err){
 					rej(err)
 				}
+				else if(!row){
+					rej("There is no last token, this is a problem")
+				}
 				else{
-					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
+					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP]).
+					this._log(`The last token saved is ${row}`)
 					res(row)
 				}
 			})
@@ -91,6 +104,7 @@ class Database{
 				}
 				else{
 					rows = rows.map((row) => Object.assign(row, {[constants.COLUMN_TOKENS_TIMESTAMP]: lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])}))
+					this._log(`From the getTokenSince ${date} , we returned ${rows.length} results`)
 					res(rows)
 				}
 			})
@@ -104,6 +118,7 @@ class Database{
 					rej(err)
 				}
 				else{
+					this._log(`We cleaned the tokens where date is older than ${date}`)
 					res()
 				}
 			})
@@ -118,12 +133,14 @@ class Database{
 						rej(err)
 					}
 					else{
+						this._log('The database has been closed')
 						res()
 					}
 				})
 			})
 		}
 		else{
+			this._log('The database was allready closed')
 			return Promise.resolve()
 		}
 	}
