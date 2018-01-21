@@ -7,7 +7,6 @@ const lib = require(path.resolve('lib'))
 const Database = require(path.resolve('Database/Database'))
 const DatabaseConstants = require(path.resolve('Database/DatabaseConstants'))
 const DB = new Database()
-DB.init()
 
 app.get('/', (req, res) => {
 	DB.getLastToken()
@@ -20,11 +19,16 @@ const server = app.listen(3000, function () {
   console.log('Dev app listening on port 3000!')
 })
 
-const loop = setInterval(() => {
+const loopFunction = () => {
 	const token = lib.getNewToken()
 	DB.addToken(token)
 	.then(() => DB.removeTokensOlderThan(moment().subtract(1.5, 'hours')))
-}, 300000)// 5 Min
+}
+
+DB.init()
+.then(() => loopFunction())
+
+const loop = setInterval(loopFunction, 300000)// 5 Min
 
 process.on('SIGINT', function() {
 	(new Promise((res) => {
