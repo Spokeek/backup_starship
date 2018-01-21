@@ -60,7 +60,9 @@ class Database{
 					rej(err)
 				}
 				else{
-					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
+					if(row){
+						row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
+					}
 					res(row)
 				}
 			})
