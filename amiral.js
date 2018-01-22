@@ -16,7 +16,7 @@ const idFleet = process.env.ID_FLEET || defaultIdFleet
 const lib = require(path.resolve('lib'))
 const Database = require(path.resolve('Database/Database'))
 const DatabaseConstants = require(path.resolve('Database/DatabaseConstants'))
-const DB = new Database()
+const DB = new Database(null, true)
 
 app.get('/', (req, res) => {
 	DB.getTokensSince(moment(0))
@@ -62,7 +62,7 @@ app.put('/code', (req, res) => {
 
 const serverPort = process.env.PORT || 3000
 const server = app.listen(serverPort, function () {
-  console.log(`Amiral '${idFleet}' app listening on port ${serverPort} !`)
+  lib.log(`Amiral '${idFleet}' app listening on port ${serverPort} !`, true)
 })
 
 const loopFunction = () => {
@@ -87,15 +87,19 @@ const exitHandler = () => {
 		res()
 	}))
 	.then(() => new Promise((res) => {
-		console.log("The application exited successfully.")
+		lib.log("The application exited successfully.", true)
 		res()
 	}))
 	.then(() =>	process.exit())
+	.catch((ex) => {
+		lib.log(`A problem occured\n${ex}`, true)
+		process.exit()
+	})
 }
 
 process.on('exit', exitHandler.bind(null,{cleanup:true}));
 process.on('SIGINT', exitHandler.bind(null, {exit:true}));
 process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
 process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+//process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 

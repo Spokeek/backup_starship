@@ -1,26 +1,19 @@
 const path = require('path')
 const sqlite3 = require('sqlite3').verbose()
 const lib = require(path.resolve('lib'))
-
+const moment = require('moment')
 const constants = require(path.resolve('Database/DatabaseConstants'))
 
 const databaseDefaultPath = path.resolve('database.db')
 
 class Database{
 
-	constructor(databasePath, verbose){
+	constructor(databasePath){
 		if(!databasePath){
 			databasePath = databaseDefaultPath
 		}
 
 		this.databasePath = databasePath
-		this.verbose = verbose
-	}
-
-	_log(message){
-		if(this.verbose){
-			console.log(message)
-		}
 	}
 
 	init(){
@@ -30,7 +23,7 @@ class Database{
 					rej(err)
 				}
 				else{
-					this._log("Database initialised.")
+					lib.log("Database initialised.")
 					res()
 				}
 			})
@@ -54,7 +47,7 @@ class Database{
 					rej(err)
 				}
 				else{
-					this._log(`Token ${newToken} added to database`)
+					lib.log(`Token ${newToken} added to database`)
 					res()
 				}
 			})
@@ -71,7 +64,7 @@ class Database{
 					if(row){
 						row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
 					}
-					this._log(`getToken from ${token} returned ${row}`)
+					lib.log(`getToken from ${token} returned ${row}`)
 					res(row)
 				}
 			})
@@ -88,8 +81,8 @@ class Database{
 					rej("There is no last token, this is a problem")
 				}
 				else{
-					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP]).
-					this._log(`The last token saved is ${row}`)
+					row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
+					lib.log(`The last token recovered is ${JSON.stringify(row)}`)
 					res(row)
 				}
 			})
@@ -104,7 +97,7 @@ class Database{
 				}
 				else{
 					rows = rows.map((row) => Object.assign(row, {[constants.COLUMN_TOKENS_TIMESTAMP]: lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])}))
-					this._log(`From the getTokenSince ${date} , we returned ${rows.length} results`)
+					lib.log(`From the getTokenSince ${date} , we returned ${rows.length} results`)
 					res(rows)
 				}
 			})
@@ -118,7 +111,7 @@ class Database{
 					rej(err)
 				}
 				else{
-					this._log(`We cleaned the tokens where date is older than ${date}`)
+					lib.log(`We cleaned the tokens where date is older than ${date}`)
 					res()
 				}
 			})
@@ -133,14 +126,14 @@ class Database{
 						rej(err)
 					}
 					else{
-						this._log('The database has been closed')
+						lib.log('The database has been closed')
 						res()
 					}
 				})
 			})
 		}
 		else{
-			this._log('The database was allready closed')
+			lib.log('The database was allready closed')
 			return Promise.resolve()
 		}
 	}
