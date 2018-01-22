@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "amiral": "node amiral.js",
     "test": "node test.js"
   },
   "repository": {
