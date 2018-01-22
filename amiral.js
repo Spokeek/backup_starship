@@ -14,8 +14,8 @@ const defaultIdFleet = 'Anonymous fleet'
 const idFleet = process.env.ID_FLEET || defaultIdFleet
 
 const lib = require(path.resolve('lib'))
-const Database = require(path.resolve('Database/Database'))
-const DatabaseConstants = require(path.resolve('Database/DatabaseConstants'))
+const Database = require(path.resolve('database/Database'))
+const DatabaseConstants = require(path.resolve('database/DatabaseConstants'))
 const DB = new Database(null, true)
 
 app.get('/', (req, res) => {

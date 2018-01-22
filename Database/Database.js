@@ -2,7 +2,7 @@ const path = require('path')
 const sqlite3 = require('sqlite3').verbose()
 const lib = require(path.resolve('lib'))
 const moment = require('moment')
-const constants = require(path.resolve('Database/DatabaseConstants'))
+const constants = require(path.resolve('database/DatabaseConstants'))
 
 const databaseDefaultPath = path.resolve('database.db')
 

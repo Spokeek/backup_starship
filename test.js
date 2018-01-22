@@ -1,8 +1,8 @@
 const path = require('path')
 
 const lib = require(path.resolve('lib'))
-const Database = require(path.resolve('Database/Database'))
-const DatabaseConstants = require(path.resolve('Database/DatabaseConstants'))
+const Database = require(path.resolve('database/Database'))
+const DatabaseConstants = require(path.resolve('database/DatabaseConstants'))
 debugger
 let DB
 
