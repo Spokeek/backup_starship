@@ -64,7 +64,7 @@ class Database{
 					if(row){
 						row[constants.COLUMN_TOKENS_TIMESTAMP] = lib.DateTimeToMoment(row[constants.COLUMN_TOKENS_TIMESTAMP])
 					}
-					lib.log(`getToken from ${token} returned ${row}`)
+					lib.log(`getToken from ${token} returned ${JSON.stringify(row)}`)
 					res(row)
 				}
 			})

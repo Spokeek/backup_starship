@@ -6,12 +6,7 @@ const DatabaseConstants = require(path.resolve('database/DatabaseConstants'))
 debugger
 let DB
 
-const verbose = true
-const log = (message) => {
-	if(verbose){
-		console.log(message)
-	}
-}
+const log = (message) => lib.log(message, true)
 
 // Testing the 'getNewToken' lib function
 
