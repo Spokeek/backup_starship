@@ -4,7 +4,7 @@ const lib = require(path.resolve('lib'))
 const moment = require('moment')
 const constants = require(path.resolve('database/DatabaseConstants'))
 
-const databaseDefaultPath = path.resolve('database.db')
+const databaseDefaultPath = path.resolve('data/database.db')
 
 class Database{
 
@@ -44,7 +44,7 @@ class Database{
 				[constants.SQL_ADD_TOKEN_PARAM_TIMESTAMP]: lib.momentToDateTime()
 			}, (err) => {
 				if(err){
-					rej(err)
+					lib.log(`Impossible to add ${newToken} to database`)
 				}
 				else{
 					lib.log(`Token ${newToken} added to database`)
