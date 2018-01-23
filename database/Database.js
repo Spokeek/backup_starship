@@ -4,6 +4,7 @@ const lib = require(path.resolve('lib'))
 const moment = require('moment')
 const constants = require(path.resolve('database/DatabaseConstants'))
 const fs = require('fs')
+const mkdirp = require('mkdirp')
 const databaseDefaultPath = path.resolve('data/database.db')
 
 class Database{
@@ -34,10 +35,14 @@ class Database{
 		if(!this.db){
 
 		if (this.databasePath === databaseDefaultPath && !fs.existsSync('./data')){
-		    fs.mkdirSync('./data');
+		    mkdirp('./data', (err) => {
+   				this.db = new sqlite3.Database(this.databasePath)
+		    })
+		}
+		else{
+			this.db = new sqlite3.Database(this.databasePath)
 		}
 
-			this.db = new sqlite3.Database(this.databasePath)
 		}
 		return this.db
 	}
