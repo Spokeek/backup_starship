@@ -18,10 +18,12 @@ const Database = require(path.resolve('database/Database'))
 const DatabaseConstants = require(path.resolve('database/DatabaseConstants'))
 const DB = new Database(null, true)
 
+let satelites = []
+
 app.get('/', (req, res) => {
 	DB.getTokensSince(moment(0))
 	.then((rows) => {
-		res.send(`Welcome on the '${idFleet}' application<br/> There is for now ${rows.length} tokens saved`)
+		res.send(`Welcome on the '${idFleet}' application<br/> There is for now ${rows.length} tokens saved<br/>Here is the list of ip satelites : ${JSON.stringify(satelites)}`)
 	})
 })
 
@@ -50,6 +52,10 @@ app.put('/code', (req, res) => {
 						newCode: row[DatabaseConstants.COLUMN_TOKENS_VALUE],
 						idFleet: idFleet
 					})
+					const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+					if((satelites.filter((s) => s === ip) || []).length === 0){
+						satelites.push(ip)
+					}
 					resolve()
 				})		
 			}

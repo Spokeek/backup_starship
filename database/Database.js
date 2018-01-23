@@ -3,7 +3,7 @@ const sqlite3 = require('sqlite3').verbose()
 const lib = require(path.resolve('lib'))
 const moment = require('moment')
 const constants = require(path.resolve('database/DatabaseConstants'))
-
+const fs = require('fs')
 const databaseDefaultPath = path.resolve('data/database.db')
 
 class Database{
@@ -32,6 +32,11 @@ class Database{
 
 	getDb(){
 		if(!this.db){
+
+		if (this.databasePath === databaseDefaultPath && !fs.existsSync('./data')){
+		    fs.mkdirSync('./data');
+		}
+
 			this.db = new sqlite3.Database(this.databasePath)
 		}
 		return this.db
@@ -45,6 +50,7 @@ class Database{
 			}, (err) => {
 				if(err){
 					lib.log(`Impossible to add ${newToken} to database`)
+					res()
 				}
 				else{
 					lib.log(`Token ${newToken} added to database`)

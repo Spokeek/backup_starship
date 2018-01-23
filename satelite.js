@@ -32,9 +32,10 @@ const loopFunction = (row) => {
 
 	rp(options)
 	.then((json) => {
+		console.log(json)
 		const {idFleet, newCode} = json
 		lib.log(`The fleet '${idFleet}' is returning the token '${newCode}'`)
-		lib.addToken(newCode)
+		DB.addToken(newCode)
 	})
 	.catch((json) => {
 		switch(json.idErr){
@@ -62,6 +63,11 @@ const intervalFunction = () => {
 	})
 }
 
+DB.init()
+.then(() => DB.addToken(startupToken))
+.then(() => intervalFunction())
+
+
 const loop = setInterval(intervalFunction, intervalRequestInMin * 60 * 1000 )
 
 const exitHandler = () => {
@@ -70,10 +76,6 @@ const exitHandler = () => {
 		res()
 	}))
 	.then(() => DB.close())
-	.then(() => new Promise((res) => {
-		server.close()
-		res()
-	}))
 	.then(() => new Promise((res) => {
 		lib.log("The application exited successfully.", true)
 		res()
